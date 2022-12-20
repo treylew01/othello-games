@@ -142,7 +142,7 @@ def play(agent1, agent2):
     turn = 1
     cur_player = agent1
     while not gameOver(game):
-        move = cur_player.getComputerMove(game, turn)
+        move = cur_player.getComputerMove(game)
         game.makeMove(game, turn, move[0], move[1])
         if turn == 1:
             turn = 2
