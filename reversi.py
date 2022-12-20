@@ -3,12 +3,9 @@ import random
 import sys
 
 def drawBoard(board):
-
     # This function prints out the board that it was passed. Returns None.
-
     HLINE = '  +---+---+---+---+---+---+---+---+'
     VLINE = '  |   |   |   |   |   |   |   |   |'
-
     print('    1   2   3   4   5   6   7   8')
     print(HLINE)
     for y in range(8):
