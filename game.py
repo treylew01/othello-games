@@ -144,8 +144,6 @@ def play(agent1, agent2):
     turn = 1
     cur_player = agent1
     while not gameOver(game):
-        print(turn)
-        print()
         move = cur_player.getComputerMove(game)
         if move is not None:
             makeMove(game, turn, move[0], move[1])
@@ -159,6 +157,7 @@ def play(agent1, agent2):
     final = getScoreOfBoard(game)
     if final[0] > final[1]:
         return 1
-    elif final[0] == final[1]:
-        return 0
-    return -1
+    return 0
+    # elif final[0] == final[1]:
+    #     return 0
+    #return -1

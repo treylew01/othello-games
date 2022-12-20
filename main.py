@@ -5,7 +5,7 @@ from game import play
 class ReversiCLI():
     """Display board and questions."""
     def __init__(self, size, args):
-        if size != 3:
+        if size < 3:
             return
 
         if args[1] == "random":
@@ -19,20 +19,34 @@ class ReversiCLI():
         else:
             return
 
-        if args[1] == "random":
+        if args[2] == "random":
             self.agent2 = Random(2)
-        elif args[1] == "greedy":
+        elif args[2] == "greedy":
             self.agent2= Greedy(2)
-        elif args[1] == "Fernando":
+        elif args[2] == "Fernando":
             self.agent2 = Fernando(2)
-        elif args[1] == "Trey":
+        elif args[2] == "Trey":
             self.agent2 = Trey(2)
         else:
             return
-        self._game = play
+
+        if size > 3:
+            if size > 5:
+                return
+            if size == 5:
+                self.total_games = float(args[4])
+            self.time = int(args[3])
+
+        self.game = play
+
 
     def run(self):
-        self._game(self.agent1, self.agent2)
+        agent_score = 0.0
+        count = 0
+        while count < self.total_games:
+            agent_score += self.game(self.agent1, self.agent2)
+            count += 1
+        print(agent_score/self.total_games)
 
 
 if __name__ == "__main__":

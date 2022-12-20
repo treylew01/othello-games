@@ -12,27 +12,34 @@ class Player:
         pass
 
 class Random(Player):
-    def getComputerMove(board, piece):
+    def getComputerMove(self, board):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
         # move and return that move as a [x, y] list.
-        possibleMoves = getValidMoves(board, piece)
+        possibleMoves = getValidMoves(board, self.piece)
+        print
+        if len(possibleMoves) == 0:
+            return None
         # randomize the order of the possible moves
         move = random.choice(possibleMoves)
 
         return move
 
 class Greedy(Player):
-    def getComputerMove(board, piece):
+    def getComputerMove(self, board):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
         # move and return that move as a [x, y] list.
-        possibleMoves = getValidMoves(board, piece)
+        possibleMoves = getValidMoves(board, self.piece)
+        print(possibleMoves)
         # randomize the order of the possible moves
         moves = random.shuffle(possibleMoves)
-        
+        print(moves)
+
         max = NEGATIVEINF
         best_move = None
         for move in moves:
-            tilesToFlip = isValidMove(board, piece, move[0], move[1], True)
+            print("hello World")
+            tilesToFlip = len(isValidMove(board, self.piece, move[0], move[1], True))
+            print(tilesToFlip)
             if tilesToFlip > max:
                 max = tilesToFlip
                 best_move = move
