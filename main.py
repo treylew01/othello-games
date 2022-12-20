@@ -1,6 +1,7 @@
 import sys
-from agent import Greedy, Random, Fernando
+from agent import Greedy, Random
 from trey import Trey
+from fernando import Fernando
 from game import play
 
 class ReversiCLI():
