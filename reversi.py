@@ -39,7 +39,7 @@ def getNewBoard():
     # Creates a brand new, blank board data structure
     board = []
     for i in range(8):
-        boppend([' '] * 8)
+        board.append([' '] * 8)
     return board
 
 
