@@ -5,20 +5,27 @@ import time
 INF = float('inf')
 
 class Fernando(Player):
-    # def __init__(self, time, *args, **kwargs):
-    #     self.time = time
-    #     super().__init__(*args, **kwargs)
+    def __init__(self, time, *args, **kwargs):
+        self.time = time
+        super().__init__(*args, **kwargs)
 
     def getComputerMove(self, board):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
-        #start = time.time()
+        start = time.time()
         # move and return that move as a [x, y] list.
-        depth = 4
+        depth = 2
         max_pos = 1 if self.piece == 1 else 0
-        best_score, best_move = self.alphaBeta(board, max_pos, NEGATIVEINF, INF, self.heuristic, depth)
+        best_move = None
+        best_score = NEGATIVEINF
+        while time.time() - start < self.time:
+            score, move = self.alphaBeta(board, max_pos, NEGATIVEINF, INF, self.heuristic, depth, start)
+            if score > best_score:
+                best_score = score
+                best_move = move
+            depth += 1
         return best_move
 
-    def alphaBeta(self, board, max_pos, alpha, beta, heuristic, depth):
+    def alphaBeta(self, board, max_pos, alpha, beta, heuristic, depth, start):
         if depth == 0:
             return heuristic(board), None
         if gameOver(board):
@@ -27,11 +34,11 @@ class Fernando(Player):
         if max_pos:
             a = NEGATIVEINF
             for move in getValidMoves(board, 2 - max_pos):
-                if alpha >= beta:
+                if alpha >= beta or time.time() - start >= self.time:
                     break
                 new_board = getBoardCopy(board)
                 makeMove(new_board, 2 - max_pos, move[0], move[1])
-                search =  self.alphaBeta(new_board,  1 - max_pos, alpha, beta, heuristic, depth - 1)[0]
+                search =  self.alphaBeta(new_board,  1 - max_pos, alpha, beta, heuristic, depth - 1, start)[0]
                 if a < search:
                     a = search
                     best_move = move
@@ -40,11 +47,11 @@ class Fernando(Player):
         else:
             b = INF
             for move in getValidMoves(board, 2 - max_pos):
-                if alpha >= beta:
+                if alpha >= beta or time.time() - start >= self.time:
                     break
                 new_board = getBoardCopy(board)
                 makeMove(new_board, 2 - max_pos, move[0], move[1])
-                search = self.alphaBeta(new_board,  1 - max_pos, alpha, beta, heuristic, depth - 1)[0]
+                search = self.alphaBeta(new_board,  1 - max_pos, alpha, beta, heuristic, depth - 1, start)[0]
                 if b > search:
                     b = search
                     best_move = move

@@ -157,7 +157,7 @@ def play(agent1, agent2):
     final = getScoreOfBoard(game)
     if final[0] > final[1]:
         return 1
-    # return 0
-    elif final[0] == final[1]:
-        return 0
-    return -1
+    return 0
+    # elif final[0] == final[1]:
+    #     return 0
+    # return -1
