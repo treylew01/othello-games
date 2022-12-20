@@ -13,7 +13,7 @@ class Fernando(Player):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
         #start = time.time()
         # move and return that move as a [x, y] list.
-        depth = 4
+        depth = 5
         max_pos = 1 if self.piece == 1 else 0
         best_score, best_move = self.alphaBeta(board, max_pos, NEGATIVEINF, INF, self.heuristic, depth)
         return best_move

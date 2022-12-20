@@ -21,7 +21,7 @@ class Trey(Player):
         if len(possibleMoves) > 1:
             for move in possibleMoves:
                 passed_board = getBoardCopy(board)
-                makeMove(board, self.piece, move[0], move[1])
+                makeMove(passed_board, self.piece, move[0], move[1])
 
                 score = self.minimax(passed_board, DEPTH - 1, -9999, 9999)
                 if score > current_score:
@@ -62,7 +62,6 @@ class Trey(Player):
                 if best_move_yet < min:
                     return min
             return best_move_yet
-    
     def evaluate(self, board):
         players = getScoreOfBoard(board)
         score = players[0] - players[1]
