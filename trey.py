@@ -4,7 +4,7 @@ from game import getValidMoves, isValidMove, getBoardCopy, gameOver, getScoreOfB
 
 MAX_PLAYER = 1
 MIN_PLAYER = 2
-DEPTH = 1
+DEPTH = 5
 
 class Trey(Player):
 
