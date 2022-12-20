@@ -5,9 +5,9 @@ import time
 INF = float('inf')
 
 class Fernando(Player):
-    # def __init__(self, time, *args, **kwargs):
-    #     self.time = time
-    #     super().__init__(*args, **kwargs)
+    def __init__(self, time, *args, **kwargs):
+        self.time = time
+        super().__init__(*args, **kwargs)
 
     def getComputerMove(self, board):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
