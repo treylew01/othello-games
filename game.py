@@ -1,6 +1,6 @@
 # Reversi
 import random
-import sys
+from copy import deepcopy
 
 def resetBoard(board):
     # Blanks out the board it is passed, except for the original starting posit
@@ -84,7 +84,6 @@ def whoGoesFirst():
     # Randomly choose the player who goes first
     if random.randint(0, 1) == 0:
         return 1
-
     else:
         return 2
 
@@ -106,24 +105,55 @@ def isOnCorner(x, y):
     return (x == 0 and y == 0) or (x == 7 and y == 0) or (x == 0 and y == 7) or (x == 7 and y == 7)
 
 
-def game_over(board):
+def gameOver(board):
     if getValidMoves(board, 1) == [] and getValidMoves(board, 2) == []:
         return True
     return False
+
+
+def getScoreOfBoard(board):
+    # Determine the score by counting the tiles. Returns a dictionary with keys 'X' and 'O'.
+    oneScore = 0
+    twoScore = 0
+    for x in range(8):
+        for y in range(8):
+            if board[x][y] == 1:
+                oneScore += 1
+            if board[x][y] == 2:
+                twoScore += 1
+    return [oneScore, twoScore]
 
 
 def getNewBoard():
     # Creates a brand new, blank board data structure
     board = []
     for i in range(8):
-        board.append([' '] * 8)
+        board.append([0] * 8)
     return board
 
 
 def getBoardCopy(board):
     # Make a duplicate of the board list and return the duplicate.
-    dupeBoard = getNewBoard()
-    for x in range(8):
-        for y in range(8):
-            dupeBoard[x][y] = board[x][y]
-    return dupeBoard
+    return deepcopy(board)
+
+
+def play(agent1, agent2):
+    game = getNewBoard()
+    turn = 1
+    cur_player = agent1
+    while not gameOver(game):
+        move = cur_player.getComputerMove(game, turn)
+        game.makeMove(game, turn, move[0], move[1])
+        if turn == 1:
+            turn = 2
+            cur_player = agent2
+        else:
+            turn = 1
+            cur_player = agent1
+
+    final = getScoreOfBoard(game)
+    if final[0] > final[1]:
+        return 1
+    elif final[0] == final[1]:
+        return 0
+    return -1
