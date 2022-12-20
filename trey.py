@@ -40,11 +40,11 @@ class Trey(Player):
 
         if total_moves_length == 0 or depth == 0 or gameOver(board_state):
             return eval
-        if self.piece == MIN_PLAYER:
+        if self.piece == MAX_PLAYER:
             best_move_yet = min
             for move in total_moves:
                 passed_board = getBoardCopy(board_state)
-                makeMove(board_state, MIN_PLAYER, move[0], move[1])
+                makeMove(board_state, MAX_PLAYER, move[0], move[1])
                 current_move = self.minimax(passed_board, depth - 1, best_move_yet, max)
                 if current_move > best_move_yet:
                     best_move_yet = current_move
@@ -55,7 +55,7 @@ class Trey(Player):
             best_move_yet = max
             for move in total_moves:
                 passed_board = getBoardCopy(board_state)
-                makeMove(board_state, MAX_PLAYER, move[0], move[1])
+                makeMove(board_state, MIN_PLAYER, move[0], move[1])
                 current_move = self.minimax(passed_board, depth - 1, min, best_move_yet)
                 if current_move < best_move_yet:
                     best_move_yet = current_move
