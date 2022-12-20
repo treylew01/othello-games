@@ -7,5 +7,5 @@ def getComputerMoveRandom(board, piece):
     possibleMoves = getValidMoves(board, piece)
     # randomize the order of the possible moves
     move = random.shuffle(possibleMoves)
-
+    
     return move
