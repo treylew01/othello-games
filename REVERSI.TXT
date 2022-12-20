@@ -3,64 +3,35 @@
 
 def getPlayerMove(board, playerTile):
     # Let the player type in their move.
+    # Returns the move as [x, y] (or returns the strings 'hints' or 'quit')
+    DIGITS1TO8 = '1 2 3 4 5 6 7 8'.split()
+    while True:
+        print('Enter your move, or type quit to end the game, or hints to turn off/on hints.')
+        move = input().lower()
+        if move == 'quit':
+            return 'quit'
+        if move == 'hints':
+            return 'hints'
 
-190.     # Returns the move as [x, y] (or returns the strings 'hints' or 'quit')
+        if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
+            x = int(move[0]) - 1
+            y = int(move[1]) - 1
+            if isValidMove(board, playerTile, x, y) == False:
+                continue
+            else:
+                break
+        else:
+            print('That is not a valid move. Type the x digit (1-8), then the y digit (1-8).')
+            print('For example, 81 will be the top-right corner.')
+    return [x, y]
 
-191.     DIGITS1TO8 = '1 2 3 4 5 6 7 8'.split()
 
-192.     while True:
 
-193.         print('Enter your move, or type quit to end the game, or hints to turn off/on hints.')
+def getComputerMove(board, computerTile):
+    # Given a board and the computer's tile, determine where to
+    # move and return that move as a [x, y] list.
+    possibleMoves = getValidMoves(board, computerTile)
 
-194.         move = input().lower()
-
-195.         if move == 'quit':
-
-196.             return 'quit'
-
-197.         if move == 'hints':
-
-198.             return 'hints'
-
-199.
-
-200.         if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
-
-201.             x = int(move[0]) - 1
-
-202.             y = int(move[1]) - 1
-
-203.             if isValidMove(board, playerTile, x, y) == False:
-
-204.                 continue
-
-205.             else:
-
-206.                 break
-
-207.         else:
-
-208.             print('That is not a valid move. Type the x digit (1-8), then the y digit (1-8).')
-
-209.             print('For example, 81 will be the top-right corner.')
-
-210.
-
-211.     return [x, y]
-
-212.
-
-213.
-
-214. def getComputerMove(board, computerTile):
-
-215.     # Given a board and the computer's tile, determine where to
-
-216.     # move and return that move as a [x, y] list.
-
-217.     possibleMoves = getValidMoves(board, computerTile)
-
-218.
 
 219.     # randomize the order of the possible moves
 
