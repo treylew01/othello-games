@@ -14,10 +14,9 @@ def resetBoard(board):
     board[4][4] = 1
 
 
-def isValidMove(board, tile, xstart, ystart):
-
+def isValidMove(board, tile, xstart, ystart, need_tiles):
     # Returns False if the player's move on space xstart, ystart is invalid
-    # If it is a valid move, returns a list of spaces that would become the player's if they made a move h
+    # If it is a valid move, returns a list of spaces that would become the player's if they made a move here
     if board[xstart][ystart] != 0 or not isOnBoard(xstart, ystart):
         return False
 
@@ -47,12 +46,17 @@ def isValidMove(board, tile, xstart, ystart):
             if not isOnBoard(x, y):
                 continue
             if board[x][y] == tile:
-                # There are pieces to flip Go in the reverse direction until we reach the original space, noting all the tiles along the                while True:
-                    x -= xdirection
-                    y -= ydirection
-                    if x == xstart and y == ystart:
-                        break
-                    tilesToFlip.append([x, y])
+                # There are pieces to flip Go in the reverse direction until we reach the original space, noting all the tiles along the
+                if need_tiles:
+                    while True:
+                        x -= xdirection
+                        y -= ydirection
+                        if x == xstart and y == ystart:
+                            break
+                        tilesToFlip.append([x, y])
+                else:
+                    return True
+
     board[xstart][ystart] = 0 # restore the empty space
 
     if len(tilesToFlip) == 0: # If no tiles were flipped, this is not a valid move
@@ -71,7 +75,7 @@ def getValidMoves(board, tile):
     validMoves = []
     for x in range(8):
         for y in range(8):
-            if isValidMove(board, tile, x, y) != False:
+            if isValidMove(board, tile, x, y, False) != False:
                 validMoves.append([x, y])
     return validMoves
 
@@ -79,16 +83,16 @@ def getValidMoves(board, tile):
 def whoGoesFirst():
     # Randomly choose the player who goes first
     if random.randint(0, 1) == 0:
-        return 'computer'
+        return 1
 
     else:
-        return 'player'
+        return 2
 
 
 def makeMove(board, tile, xstart, ystart):
     # Place the tile on the board at xstart, ystart, and flip any of the opponent's pieces.
     # Returns False if this is an invalid move, True if it is valid
-    tilesToFlip = isValidMove(board, tile, xstart, ystart)
+    tilesToFlip = isValidMove(board, tile, xstart, ystart, True)
     if tilesToFlip == False:
         return False
     board[xstart][ystart] = tile
@@ -100,3 +104,26 @@ def makeMove(board, tile, xstart, ystart):
 def isOnCorner(x, y):
     # Returns True if the position is in one of the four corners.
     return (x == 0 and y == 0) or (x == 7 and y == 0) or (x == 0 and y == 7) or (x == 7 and y == 7)
+
+
+def game_over(board):
+    if getValidMoves(board, 1) == [] and getValidMoves(board, 2) == []:
+        return True
+    return False
+
+
+def getNewBoard():
+    # Creates a brand new, blank board data structure
+    board = []
+    for i in range(8):
+        board.append([' '] * 8)
+    return board
+
+
+def getBoardCopy(board):
+    # Make a duplicate of the board list and return the duplicate.
+    dupeBoard = getNewBoard()
+    for x in range(8):
+        for y in range(8):
+            dupeBoard[x][y] = board[x][y]
+    return dupeBoard
