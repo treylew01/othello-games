@@ -1,69 +1,99 @@
 from agent import Player
+from math import inf
 
-from game import getValidMoves, isValidMove, getBoardCopy, gameOver, getScoreOfBoard, makeMove
+from game import getValidMoves, getBoardCopy, gameOver, getScoreOfBoard, makeMove
 
 MAX_PLAYER = 1
 MIN_PLAYER = 2
-DEPTH = 5
 
 class Trey(Player):
-
     def getComputerMove(self, board):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
-        # move and return that move as a [x, y] list.
-        possibleMoves = getValidMoves(board, self.piece)
-        if len(possibleMoves) == 0:
-            return None
-        # randomize the order of the possible moves
-        current_score = -9999
-        winning_move = None
 
-        if len(possibleMoves) > 1:
-            for move in possibleMoves:
-                passed_board = getBoardCopy(board)
-                makeMove(passed_board, self.piece, move[0], move[1])
+        depth = 4
+        max_pos = 1 if self.piece == 1 else 0
+        best_score, best_move = self.minimax_alpha_beta(board, max_pos, self.heuristic, depth, -inf, inf)
+        return best_move
 
-                score = self.minimax(passed_board, DEPTH - 1, -9999, 9999)
-                if score > current_score:
-                    winning_move = move
-                    current_score = score
+    def minimax(self, board, side, heuristic, depth):
+        #print(depth)
+        if depth == 0 or gameOver(board):
+            return heuristic(board), None
+        
+        moves = getValidMoves(board, 2 - side)
+            
+        best_move = None
+        if side:
+            best_score_yet = -9999
+            for move in moves:
+
+                new_board = getBoardCopy(board)
+                makeMove(new_board, 2 - side, move[0], move[1])
+                move_score, _ = self.minimax(new_board,  1 - side, heuristic, depth - 1)
+
+                if best_score_yet < move_score:
+                    best_score_yet = move_score
+                    best_move = move
+
+            return best_score_yet, best_move
         else:
-            winning_move = possibleMoves[0]
-        return winning_move
+            best_score_yet = 9999
+            for move in moves:
 
-    def minimax(self, board_state, depth, min, max):
-        total_moves = getValidMoves(board_state, self.piece)
+                new_board = getBoardCopy(board)
+                makeMove(new_board, 2 - side, move[0], move[1])
+                move_score, _ = self.minimax(new_board,  1 - side, heuristic, depth - 1)
 
-        total_moves_length = len(total_moves)
-        eval = self.evaluate(board_state)
+                if best_score_yet > move_score:
+                    best_score_yet = move_score
+                    best_move = move
 
-
-        if total_moves_length == 0 or depth == 0 or gameOver(board_state):
-            return eval
-        if self.piece == MAX_PLAYER:
-            best_move_yet = min
-            for move in total_moves:
-                passed_board = getBoardCopy(board_state)
-                makeMove(board_state, MAX_PLAYER, move[0], move[1])
-                current_move = self.minimax(passed_board, depth - 1, best_move_yet, max)
-                if current_move > best_move_yet:
-                    best_move_yet = current_move
-                if best_move_yet > max:
-                    return max
-            return best_move_yet
-        else:
-            best_move_yet = max
-            for move in total_moves:
-                passed_board = getBoardCopy(board_state)
-                makeMove(board_state, MIN_PLAYER, move[0], move[1])
-                current_move = self.minimax(passed_board, depth - 1, min, best_move_yet)
-                if current_move < best_move_yet:
-                    best_move_yet = current_move
-                if best_move_yet < min:
-                    return min
-            return best_move_yet
+            return best_score_yet, best_move
     
-    def evaluate(self, board):
-        players = getScoreOfBoard(board)
-        score = players[0] - players[1]
-        return score
+    def minimax_alpha_beta(self, board, side, heuristic, depth, alpha, beta):        
+        moves = getValidMoves(board, 2 - side)
+        if depth == 0 or gameOver(board):
+            return heuristic(board), None
+        
+        best_move = None
+        if side:
+            a = -inf
+            for move in moves:
+
+                new_board = getBoardCopy(board)
+                makeMove(new_board, 2 - side, move[0], move[1])
+                move_score, _ = self.minimax_alpha_beta(new_board,  1 - side, heuristic, depth - 1, alpha, beta)
+
+                if move_score > a:
+                    a = move_score
+                    best_move = move
+                
+                alpha = max(alpha, a)
+                if beta <= alpha:
+                    break
+                    
+
+            return a, best_move
+        else:
+            b = inf
+            for move in moves:
+
+                new_board = getBoardCopy(board)
+                makeMove(new_board, 2 - side, move[0], move[1])
+                move_score, _ = self.minimax_alpha_beta(new_board,  1 - side, heuristic, depth - 1, alpha, beta)
+
+                if b > move_score:
+                    b = move_score
+                    best_move = move
+                
+                beta = min(beta, b)
+                if beta <= alpha:
+                    break
+
+            return b, best_move
+        
+    
+    def heuristic(self, board):
+        score = getScoreOfBoard(board)
+        return score[0] - score[1]
+
