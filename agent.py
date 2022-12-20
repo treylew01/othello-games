@@ -29,17 +29,13 @@ class Greedy(Player):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
         # move and return that move as a [x, y] list.
         possibleMoves = getValidMoves(board, self.piece)
-        print(possibleMoves)
         # randomize the order of the possible moves
-        moves = random.shuffle(possibleMoves)
-        print(moves)
+        random.shuffle(possibleMoves)
 
         max = NEGATIVEINF
         best_move = None
-        for move in moves:
-            print("hello World")
+        for move in possibleMoves:
             tilesToFlip = len(isValidMove(board, self.piece, move[0], move[1], True))
-            print(tilesToFlip)
             if tilesToFlip > max:
                 max = tilesToFlip
                 best_move = move
