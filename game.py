@@ -2,6 +2,21 @@
 import random
 from copy import deepcopy
 
+def drawBoard(board):
+    # This function prints out the board that it was passed. Returns None.
+    HLINE = '  +---+---+---+---+---+---+---+---+'
+    VLINE = '  |   |   |   |   |   |   |   |   |'
+    print('    1   2   3   4   5   6   7   8')
+    print(HLINE)
+    for y in range(8):
+        print(VLINE)
+        print(y+1, end=' ')
+        for x in range(8):
+            print('| %s' % (board[x][y]), end=' ')
+        print('|')
+        print(VLINE)
+        print(HLINE)
+
 def resetBoard(board):
     # Blanks out the board it is passed, except for the original starting posit
     for x in range(8):
@@ -55,6 +70,7 @@ def isValidMove(board, tile, xstart, ystart, need_tiles):
                             break
                         tilesToFlip.append([x, y])
                 else:
+                    board[xstart][ystart] = 0
                     return True
 
     board[xstart][ystart] = 0 # restore the empty space
@@ -139,11 +155,17 @@ def getBoardCopy(board):
 
 def play(agent1, agent2):
     game = getNewBoard()
+    resetBoard(game)
+    drawBoard(game)
     turn = 1
     cur_player = agent1
     while not gameOver(game):
+        drawBoard(game)
+        print(turn)
+        print()
         move = cur_player.getComputerMove(game)
-        game.makeMove(game, turn, move[0], move[1])
+        if move is not None:
+            makeMove(game, turn, move[0], move[1])
         if turn == 1:
             turn = 2
             cur_player = agent2
@@ -152,8 +174,12 @@ def play(agent1, agent2):
             cur_player = agent1
 
     final = getScoreOfBoard(game)
+    print("GAME IS OVER")
     if final[0] > final[1]:
+        print("Player 1 won")
         return 1
     elif final[0] == final[1]:
+        print("TIE GAME")
         return 0
+    print("Player 2 won")
     return -1
