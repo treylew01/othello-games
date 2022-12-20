@@ -41,3 +41,16 @@ class Greedy(Player):
                 best_move = move
 
         return best_move
+
+class Fernando(Player):
+    def getComputerMove(self, board):
+        """ Board is the current Board, piece is the player, i.e 1's and 2's """
+        # move and return that move as a [x, y] list.
+        possibleMoves = getValidMoves(board, self.piece)
+        print
+        if len(possibleMoves) == 0:
+            return None
+        # randomize the order of the possible moves
+        move = random.choice(possibleMoves)
+
+        return move
