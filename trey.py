@@ -4,7 +4,7 @@ from game import getValidMoves, isValidMove, getBoardCopy, gameOver, getScoreOfB
 
 MAX_PLAYER = 1
 MIN_PLAYER = 2
-DEPTH = 5
+DEPTH = 1
 
 class Trey(Player):
 
@@ -21,7 +21,7 @@ class Trey(Player):
         if len(possibleMoves) > 1:
             for move in possibleMoves:
                 passed_board = getBoardCopy(board)
-                makeMove(board, self.piece, move[0], move[1])
+                makeMove(passed_board, self.piece, move[0], move[1])
 
                 score = self.minimax(passed_board, DEPTH - 1, -9999, 9999)
                 if score > current_score:
