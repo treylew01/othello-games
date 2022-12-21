@@ -41,8 +41,8 @@ class Trey(Player):
         if depth == 0 or gameOver(board):
             return heuristic(board), None
         
-        if len(moves) == 0:
-            return heuristic(board), None
+        #if len(moves) == 0:
+        #    return heuristic(board), None
             
         best_move = None
         if side:
