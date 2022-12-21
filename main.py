@@ -45,7 +45,7 @@ class ReversiCLI():
         while count < self.total_games:
             agent_score += self.game(self.agent1, self.agent2)
             count += 1
-            print(agent_score/count)
+        #    print(agent_score/count)
         print(agent_score/self.total_games)
 
 

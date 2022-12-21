@@ -155,7 +155,7 @@ def play(agent1, agent2):
             cur_player = agent1
 
     final = getScoreOfBoard(game)
-    print("Final Score: ", final)
+    #print("Final Score: ", final)
     if final[0] > final[1]:
         return 1
     return 0

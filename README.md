@@ -32,9 +32,15 @@ The final argument games, is the number of games you want to play with the agent
 
 A good example commands would be
 
-python3 main.py Fernando random .2 50 \
+python3 main.py Fernando random .1 50 \
 python3 main.py Trey Fernando .2 50 \
-python3 main.py greedy random .2 50 
+python3 main.py greedy random .3 100 
+
+A good example of run times if you were to want to test yourself would be
+
+python3 main.py Trey Fernando .1 10 
+
+This test takes about 1 minute to run and spit out the results. Obviously as move time is greater and more games are run this time will get much greater. We ran massive tests in the results section so you wouldn't have to.
 
 <br>
 
