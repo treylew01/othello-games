@@ -11,7 +11,8 @@ class ReversiCLI():
             return
 
         self.total_games = float(args[4])
-        self.time = int(args[3])
+        self.time = float(args[3])
+
 
         if args[1] == "random":
             self.agent1 = Random(1)
@@ -20,7 +21,7 @@ class ReversiCLI():
         elif args[1] == "Fernando":
             self.agent1 = Fernando(self.time, 1)
         elif args[1] == "Trey":
-            self.agent1 = Trey(1)
+            self.agent1 = Trey(self.time, 1)
         else:
             return
 
@@ -31,7 +32,7 @@ class ReversiCLI():
         elif args[2] == "Fernando":
             self.agent2 = Fernando(self.time, 2)
         elif args[2] == "Trey":
-            self.agent2 = Trey(2)
+            self.agent2 = Trey(self.time, 2)
         else:
             return
 

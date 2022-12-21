@@ -2,24 +2,37 @@ from agent import Player
 from math import inf
 import random
 
+import time
+
 from game import getValidMoves, getBoardCopy, gameOver, getScoreOfBoard, makeMove
 #ideas synthesized from https://kartikkukreja.wordpress.com/2013/03/30/heuristic-function-for-reversiothello/
 MAX_PLAYER = 1
 MIN_PLAYER = 2
 
 class Trey(Player):
+    def __init__(self, time, *args, **kwargs):
+        self.time = time
+        super().__init__(*args, **kwargs)
+
     def getComputerMove(self, board):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
+        start = time.time()
 
         # First look for a kill_move, if such a move exists, capture it
-        killer = self.killer_move(board)
-        if killer is not None:
-            return killer
+        #killer = self.killer_move(board)
+        #if killer is not None:
+        #    return killer
 
-        depth = 3
+        depth = 2
         max_pos = 1 if self.piece == 1 else 0
-
-        best_score, best_move = self.minimax_alpha_beta(board, max_pos, self.heuristic, depth, -inf, inf)
+        best_move = None
+        best_score = -inf
+        while time.time() - start < self.time:
+            score, move = self.minimax_alpha_beta(board, max_pos, self.heuristic, depth, -inf, inf, start)
+            if score > best_score:
+                best_score = score
+                best_move = move
+            depth += 1
         return best_move
 
     def minimax(self, board, side, heuristic, depth):
@@ -59,7 +72,7 @@ class Trey(Player):
 
             return best_score_yet, best_move
     
-    def minimax_alpha_beta(self, board, side, heuristic, depth, alpha, beta):        
+    def minimax_alpha_beta(self, board, side, heuristic, depth, alpha, beta, start):        
         moves = getValidMoves(board, 2 - side)
         if depth == 0 or gameOver(board):
             return heuristic(board), None
@@ -71,10 +84,12 @@ class Trey(Player):
         if side:
             a = -inf
             for move in moves:
+                if time.time() - start >= self.time:
+                    break
 
                 new_board = getBoardCopy(board)
                 makeMove(new_board, 2 - side, move[0], move[1])
-                move_score, _ = self.minimax_alpha_beta(new_board,  1 - side, heuristic, depth - 1, alpha, beta)
+                move_score, _ = self.minimax_alpha_beta(new_board,  1 - side, heuristic, depth - 1, alpha, beta, start)
 
                 if move_score > a:
                     a = move_score
@@ -89,10 +104,12 @@ class Trey(Player):
         else:
             b = inf
             for move in moves:
+                if time.time() - start >= self.time:
+                    break
 
                 new_board = getBoardCopy(board)
                 makeMove(new_board, 2 - side, move[0], move[1])
-                move_score, _ = self.minimax_alpha_beta(new_board,  1 - side, heuristic, depth - 1, alpha, beta)
+                move_score, _ = self.minimax_alpha_beta(new_board,  1 - side, heuristic, depth - 1, alpha, beta, start)
 
                 if b > move_score:
                     b = move_score
