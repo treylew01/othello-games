@@ -51,3 +51,8 @@ I first went down the minimax route, with a fixed depth, but I realized that if 
 
 ### Fernando
 I went down the alpha beta minimax method from the start with iterative deepening. My heurisitic took account of mobility of pieces (available moves), frontier pieces (pieces that are adjacent to empty spaces), the corners, and adjacent corners. I also have different strategies for different parts of the game. I penalize frontier score in the beginning and middle of the game, but do not account for it towards the end of the game. Towards the end of the game I emphasize game score and mobility so I can still have pieces to move. The weights also change depending on the phase of the game (early, mid, late) as the value of certain characteristics changes during the game (ex. in the early game total score does not matter but has a heavy emphasis during the late game). These could probably have been tuned more thoroughly to get the best perfromance out of this structure, but was still able to output interesting results.
+
+## Results
+pypy3 main.py Fernando random 0.05 10000 - 0.846
+pypy3 main.py Trey greedy 0.05 10000 - 0.811
+pypy3 main.py Fernando Trey 0.01 10000 - 0.397
