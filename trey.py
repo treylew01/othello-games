@@ -5,7 +5,19 @@ import random
 import time
 
 from game import getValidMoves, getBoardCopy, gameOver, getScoreOfBoard, makeMove
-#ideas synthesized from https://kartikkukreja.wordpress.com/2013/03/30/heuristic-function-for-reversiothello/
+
+#Pulled from https://courses.cs.washington.edu/courses/cse573/04au/Project/mini1/RUSSIA/Final_Paper.pdf
+UTILITY = {
+            (0, 0): 4, (0, 1): -3, (0, 2): 2, (0, 3): 2, (0, 4): 2, (0, 5): 2, (0, 6): -3, (0, 7): 4,
+            (1, 0): -3, (1, 1): -4, (1, 2): -1, (1, 3): -1, (1, 4): -1, (1, 5): -1, (1, 6): -4, (1, 7): -3,
+            (2, 0): 2, (2, 1): -1, (2, 2): 1, (2, 3): 0, (2, 4): 0, (2, 5): 1, (2, 6): -1, (2, 7): 2, 
+            (3, 0): 2, (3, 1): -1, (3, 2): 0, (3, 3): 1, (3, 4): 1, (3, 5): 0, (3, 6): -1, (3, 7): 2,
+            (4, 0): 2, (4, 1): -1, (4, 2): 0, (4, 3): 1, (4, 4): 1, (4, 5): 0, (4, 6): -1, (4, 7): 2,
+            (5, 0): 2, (5, 1): -1, (5, 2): 1, (5, 3): 0, (5, 4): 0, (5, 5): 1, (5, 6): -1, (5, 7): 2,
+            (6, 0): -3, (6, 1): -4, (6, 2): -1, (6, 3): -1, (6, 4): -1, (6, 5): -1, (6, 6): -4, (6, 7): -3,
+            (7, 0): 4, (7, 1): -3, (7, 2): 2, (7, 3): 2, (7, 4): 2, (7, 5): 2, (7, 6): -3, (7, 7): 4
+        }
+
 MAX_PLAYER = 1
 MIN_PLAYER = 2
 
@@ -18,20 +30,31 @@ class Trey(Player):
         """ Board is the current Board, piece is the player, i.e 1's and 2's """
         start = time.time()
 
-        # First look for a kill_move, if such a move exists, capture it
-        #killer = self.killer_move(board)
-        #if killer is not None:
-        #    return killer
+        moves = getValidMoves(board, self.piece)
+        if len(moves) == 1:
+            return moves[0]
+        if len(moves) == 0:
+            return None
 
+        # First look for a kill_move, if such a move exists, capture it
+        killer = self.killer_move(board)
+        if killer is not None:
+            return killer
+        
         depth = 2
         max_pos = 1 if self.piece == 1 else 0
         best_move = None
-        best_score = -inf
+        best_score = -inf if max_pos else inf
         while time.time() - start < self.time:
-            score, move = self.minimax_alpha_beta(board, max_pos, self.heuristic, depth, -inf, inf, start)
-            if score > best_score:
-                best_score = score
-                best_move = move
+            score, move = self.minimax_alpha_beta(board, max_pos, self.utility_heuristic, depth, -inf, inf, start)
+            if max_pos:
+                if score > best_score:
+                    best_score = score
+                    best_move = move
+            else:
+                if score < best_score:
+                    best_score = score
+                    best_move = move
             depth += 1
         return best_move
 
@@ -41,8 +64,8 @@ class Trey(Player):
         if depth == 0 or gameOver(board):
             return heuristic(board), None
         
-        #if len(moves) == 0:
-        #    return heuristic(board), None
+        if len(moves) == 0:
+            return heuristic(board), None
             
         best_move = None
         if side:
@@ -85,7 +108,10 @@ class Trey(Player):
             a = -inf
             for move in moves:
                 if time.time() - start >= self.time:
-                    break
+                    if best_move == None:
+                        return heuristic(board), move
+                    else:
+                        return a, best_move
 
                 new_board = getBoardCopy(board)
                 makeMove(new_board, 2 - side, move[0], move[1])
@@ -105,7 +131,11 @@ class Trey(Player):
             b = inf
             for move in moves:
                 if time.time() - start >= self.time:
-                    break
+                    if best_move == None:
+                        return heuristic(board), move
+                    else:
+                        return b, best_move
+
 
                 new_board = getBoardCopy(board)
                 makeMove(new_board, 2 - side, move[0], move[1])
@@ -122,10 +152,16 @@ class Trey(Player):
             return b, best_move
         
     
+
     def greedy_heuristic(self, board):
+        """
+            Simply Greedy Heuristic which goes for points based on max or min
+        """
         score = getScoreOfBoard(board)
         return score[0] - score[1]
     
+    #ideas synthesized from https://kartikkukreja.wordpress.com/2013/03/30/heuristic-function-for-reversiothello/
+
     def heuristic(self, board):
         coin_parity = self.coin_parity(board)
         mobility = self.mobility(board)
@@ -168,7 +204,19 @@ class Trey(Player):
                 count_min += 1
         return count_max, count_min
 
+    def utility_heuristic(self, board):
+        max_value = 0
+        min_value = 0
 
+        for x in range(8):
+            for y in range(8):
+                if board[x][y] == MIN_PLAYER:
+                    min_value += UTILITY[(x, y)]
+                if board[x][y] == MAX_PLAYER:
+                    max_value += UTILITY[(x, y)]
+
+        utility_value = max_value - min_value
+        return utility_value
 
 
     
